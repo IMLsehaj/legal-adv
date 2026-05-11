@@ -20,8 +20,8 @@ const analyzeCase = asyncHandler(async (req, res) => {
     throw new Error('Please provide a case description');
   }
 
-  // We use gemini-pro as it's fully supported by the currently installed SDK version
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  // Use gemini-2.5-flash (Google retired the 1.0 and 1.5 models)
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const prompt = `
     You are an expert legal advisor. Read the following case description and provide a preliminary analysis.

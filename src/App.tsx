@@ -16,6 +16,8 @@ import Pricing from "./pages/Pricing.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
+import AdminLogin from "./pages/AdminLogin.tsx";
+import LawyerLogin from "./pages/LawyerLogin.tsx";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,8 @@ const App = () => (
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/lawyer-login" element={<LawyerLogin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
