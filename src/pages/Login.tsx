@@ -33,9 +33,15 @@ const Login = () => {
 
       login(data.token, data);
       toast({ title: "Welcome back!", description: "You have successfully logged in." });
-      navigate("/dashboard");
-    } catch (error: any) {
-      toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+      
+      if (data.role === 'admin') {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      const e = error as Error;
+      toast({ title: "Login Failed", description: e.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }

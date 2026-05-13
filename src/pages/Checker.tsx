@@ -95,9 +95,10 @@ const Checker = () => {
       addDocument({ id: Date.now(), name: file.name, status: "pending", score: 85, date: new Date().toLocaleDateString(), type: "Document" });
 
       toast({ title: "Analysis Complete", description: "Your document was successfully analyzed by AI." });
-    } catch (error: any) {
-      console.error("AI Analysis Error:", error);
-      toast({ title: "Analysis Error", description: error.message, variant: "destructive" });
+    } catch (error) {
+      const e = error as Error;
+      console.error("AI Analysis Error:", e);
+      toast({ title: "Analysis Error", description: e.message, variant: "destructive" });
     } finally {
       setAnalyzing(false);
     }

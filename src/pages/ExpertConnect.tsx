@@ -58,8 +58,9 @@ const ExpertConnect = () => {
 
       toast({ title: "Consultation Requested!", description: `Your request with ${lawyerName} has been sent to our backend.` });
       setSelectedLawyer(null);
-    } catch (error: any) {
-      toast({ title: "Booking Failed", description: error.message, variant: "destructive" });
+    } catch (error) {
+      const e = error as Error;
+      toast({ title: "Booking Failed", description: e.message, variant: "destructive" });
     }
   };
 

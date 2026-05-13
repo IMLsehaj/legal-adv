@@ -37,9 +37,10 @@ const AdminLogin = () => {
 
       login(data.token, data);
       toast({ title: "Admin Access Granted", description: "Welcome to the Admin Control Panel." });
-      navigate("/dashboard");
-    } catch (error: any) {
-      toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+      navigate("/admin/dashboard");
+    } catch (error) {
+      const e = error as Error;
+      toast({ title: "Login Failed", description: e.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }

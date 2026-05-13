@@ -18,6 +18,7 @@ import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
 import LawyerLogin from "./pages/LawyerLogin.tsx";
+import AdminDashboard from "./pages/AdminDashboard.tsx";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/lawyer-login" element={<LawyerLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

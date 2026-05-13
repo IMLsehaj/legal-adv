@@ -5,19 +5,26 @@ import { useState } from "react";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { useAuth } from "@/contexts/AuthContext";
 
-const navLinks = [
-  { to: "/", label: "Home" },
-  { to: "/templates", label: "Templates" },
-  { to: "/checker", label: "Document Checker" },
-  { to: "/experts", label: "Experts" },
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/pricing", label: "Pricing" },
-];
+const getNavLinks = (role?: string) => {
+  const links = [
+    { to: "/", label: "Home" },
+    { to: "/templates", label: "Templates" },
+    { to: "/checker", label: "Document Checker" },
+    { to: "/experts", label: "Experts" },
+    { to: "/dashboard", label: "Dashboard" },
+    { to: "/pricing", label: "Pricing" },
+  ];
+  if (role === "admin") {
+    links.splice(4, 0, { to: "/admin/dashboard", label: "Add New Lawyer" });
+  }
+  return links;
+};
 
 const Navbar = () => {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, logout } = useAuth();
+  const currentNavLinks = getNavLinks(user?.role);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b">
@@ -30,7 +37,7 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
+          {currentNavLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
@@ -70,7 +77,7 @@ const Navbar = () => {
 
       {mobileOpen && (
         <div className="md:hidden border-t bg-card p-4 space-y-2">
-          {navLinks.map((link) => (
+          {currentNavLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
@@ -86,7 +93,7 @@ const Navbar = () => {
           ))}
           <div className="pt-2 flex gap-2">
             {user ? (
-              <Button variant="outline" size="sm" className="flex-1" onClick={logout}>Log out</Button>
+              <Button variant="outline" size="sm" className="w-full" onClick={logout}>Log out</Button>
             ) : (
               <div className="flex gap-2 w-full">
                 <Button variant="ghost" size="sm" className="flex-1" asChild><Link to="/login">Sign In</Link></Button>

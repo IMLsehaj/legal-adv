@@ -11,6 +11,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const themes: { name: ThemeName; label: string; colors: { primary: string; accent: string } }[] = [
   { name: "navy", label: "Navy Gold", colors: { primary: "#1e3a5f", accent: "#d4a843" } },
   { name: "emerald", label: "Emerald", colors: { primary: "#065f46", accent: "#10b981" } },
@@ -45,6 +46,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   return <ThemeContext.Provider value={{ theme, setTheme, isDark, toggleDark }}>{children}</ThemeContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
