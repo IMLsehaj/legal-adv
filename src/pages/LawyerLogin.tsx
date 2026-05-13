@@ -38,8 +38,9 @@ const LawyerLogin = () => {
       login(data.token, data);
       toast({ title: "Welcome back!", description: "You have successfully logged in to the Lawyer Portal." });
       navigate("/dashboard");
-    } catch (error: any) {
-      toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+    } catch (error) {
+      const e = error as Error;
+      toast({ title: "Login Failed", description: e.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }

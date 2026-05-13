@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Scale, Mail, Lock, User as UserIcon } from "lucide-react";
+import { Scale, Mail, Lock, User as UserIcon, Key } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [roleKey, setRoleKey] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const { toast } = useToast();
@@ -25,7 +26,7 @@ const Register = () => {
       const res = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, roleKey }),
       });
 
       const data = await res.json();
@@ -34,9 +35,15 @@ const Register = () => {
 
       login(data.token, data);
       toast({ title: "Account created!", description: "Welcome to LegalEdge." });
-      navigate("/dashboard");
-    } catch (error: any) {
-      toast({ title: "Registration Failed", description: error.message, variant: "destructive" });
+      
+      if (data.role === 'admin') {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      const e = error as Error;
+      toast({ title: "Registration Failed", description: e.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -75,6 +82,13 @@ const Register = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input id="password" type="password" required placeholder="••••••••" className="pl-10" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="roleKey">Admin Key (Optional)</Label>
+              <div className="relative">
+                <Key className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input id="roleKey" type="password" placeholder="Leave empty for client" className="pl-10" value={roleKey} onChange={(e) => setRoleKey(e.target.value)} />
               </div>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>{loading ? "Creating account..." : "Create Account"}</Button>

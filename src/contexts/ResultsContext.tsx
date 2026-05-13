@@ -46,7 +46,9 @@ export const ResultsProvider = ({ children }: { children: ReactNode }) => {
     try {
       const raw = localStorage.getItem('results.activity');
       if (raw) return JSON.parse(raw) as number[];
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
     return initialActivity;
   });
 
@@ -54,7 +56,9 @@ export const ResultsProvider = ({ children }: { children: ReactNode }) => {
     try {
       localStorage.setItem('results.documents', JSON.stringify(documents));
       localStorage.setItem('results.activity', JSON.stringify(activity));
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
   }, [documents, activity]);
 
   const addDocument = (d: DocumentRecord) => {
@@ -79,6 +83,7 @@ export const ResultsProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useResults = () => {
   const ctx = useContext(ResultsContext);
   if (!ctx) throw new Error('useResults must be used within ResultsProvider');

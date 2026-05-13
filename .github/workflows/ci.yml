@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "main", "wolf" ]
+   
   pull_request:
-    branches: [ "main", "wolf" ]
+   
 
 jobs:
   frontend-build:

@@ -1,8 +1,11 @@
 import { FileText, Clock, CheckCircle2, AlertTriangle, XCircle, TrendingUp, BarChart3, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useResults } from "@/contexts/ResultsContext";
+import { useResults, DocStatus } from "@/contexts/ResultsContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive"; icon: React.ElementType }> = {
   approved: { label: "Approved", variant: "default", icon: CheckCircle2 },
@@ -12,6 +15,7 @@ const statusConfig: Record<string, { label: string; variant: "default" | "second
 
 const Dashboard = () => {
   const { documents, activity, addDocument } = useResults();
+  const { user } = useAuth();
 
   const total = documents.length;
   const approvedCount = documents.filter((d) => d.status === 'approved').length;
@@ -35,6 +39,15 @@ const Dashboard = () => {
           <div className="mb-10">
             <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-3">Dashboard</h1>
             <p className="text-muted-foreground">Track your submitted documents, scores, and corrections.</p>
+            {user?.role === 'admin' && (
+              <div className="mt-4 mb-2 p-4 bg-destructive/10 border border-destructive/20 rounded-lg max-w-2xl">
+                <h3 className="text-destructive font-semibold mb-1">Administrator Account</h3>
+                <p className="text-sm text-muted-foreground mb-3">You are currently viewing the client dashboard. Go to the Admin Panel to register advocates.</p>
+                <Button asChild variant="destructive" size="sm">
+                  <Link to="/admin/dashboard">Go to Admin Panel</Link>
+                </Button>
+              </div>
+            )}
             <div className="mt-4">
               <button
                 onClick={() => {
@@ -42,7 +55,7 @@ const Dashboard = () => {
                   const score = Math.random() > 0.2 ? Math.round(50 + Math.random() * 50) : null;
                   const statuses = ['approved', 'corrections', 'pending'] as const;
                   const status = statuses[Math.floor(Math.random() * statuses.length)];
-                  addDocument({ id, name: `Generated_${id}.pdf`, status: status as any, score, date: new Date().toLocaleDateString(), type: 'Auto' });
+                  addDocument({ id, name: `Generated_${id}.pdf`, status: status as DocStatus, score, date: new Date().toLocaleDateString(), type: 'Auto' });
                 }}
                 className="mt-3 inline-flex items-center gap-2 rounded-md bg-accent/80 px-3 py-1 text-sm font-medium text-background"
               >
