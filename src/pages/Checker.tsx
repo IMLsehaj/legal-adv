@@ -9,6 +9,8 @@ import { useResults } from "@/contexts/ResultsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import * as mammoth from "mammoth";
 
+const API_URL = import.meta.env.PROD ? "" : "http://localhost:5000";
+
 type AnalysisResult = {
   score: number;
   analysisText?: string;
@@ -51,7 +53,7 @@ const Checker = () => {
         textToAnalyze = result.value;
       }
 
-      const response = await fetch("http://localhost:5000/api/ai/analyze-case", {
+      const response = await fetch(`${API_URL}/api/ai/analyze-case`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

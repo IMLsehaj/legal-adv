@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
+const API_URL = import.meta.env.PROD ? "" : "http://localhost:5000";
+
 // Validation Schema using Zod
 const profileSchema = z.object({
   specialization: z.string().min(2, 'Specialization is required'),
@@ -43,7 +45,7 @@ export default function LawyerProfileEdit() {
     const fetchProfile = async () => {
       if (!token) return;
       try {
-        const res = await fetch('http://localhost:5000/api/users/profile', {
+        const res = await fetch(`${API_URL}/api/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -65,7 +67,7 @@ export default function LawyerProfileEdit() {
   const onSubmit = async (data: ProfileFormValues) => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/users/profile', {
+      const response = await fetch(`${API_URL}/api/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

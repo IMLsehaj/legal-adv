@@ -184,6 +184,8 @@ const templateData: Record<string, { title: string; category: string; descriptio
   }
 };
 
+const API_URL = import.meta.env.PROD ? "" : "http://localhost:5000";
+
 const TemplateFill = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -227,7 +229,7 @@ const TemplateFill = () => {
 
     setIsGenerating(true);
     try {
-      const response = await fetch("http://localhost:5000/api/ai/generate-template", {
+      const response = await fetch(`${API_URL}/api/ai/generate-template`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
