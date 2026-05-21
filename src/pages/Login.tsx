@@ -31,14 +31,14 @@ const Login = () => {
 
       if (!res.ok) throw new Error(data.message || "Failed to login");
 
+      if (data.role !== 'client') {
+        throw new Error("Please use the dedicated Lawyer or Admin portal to sign in.");
+      }
+
       login(data.token, data);
       toast({ title: "Welcome back!", description: "You have successfully logged in." });
       
-      if (data.role === 'admin') {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard");
     } catch (error) {
       const e = error as Error;
       toast({ title: "Login Failed", description: e.message, variant: "destructive" });

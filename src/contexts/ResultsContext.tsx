@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback, useMemo } from 'react';
+import { useAuth } from './AuthContext';
 
 export type DocStatus = 'approved' | 'corrections' | 'pending';
 
 export type DocumentRecord = {
-  id: number;
+  _id?: string;
+  id?: number;
   name: string;
   status: DocStatus;
   score: number | null;
@@ -20,64 +22,68 @@ type ResultsContextValue = {
 
 const ResultsContext = createContext<ResultsContextValue | undefined>(undefined);
 
-const initialDocs: DocumentRecord[] = [
-  { id: 1, name: 'Rent_Agreement_v2.pdf', status: 'approved', score: 94, date: 'Mar 25, 2026', type: 'Property' },
-  { id: 2, name: 'FIR_Complaint.pdf', status: 'corrections', score: 67, date: 'Mar 24, 2026', type: 'Criminal' },
-  { id: 3, name: 'NDA_Draft.docx', status: 'pending', score: null, date: 'Mar 23, 2026', type: 'Business' },
-  { id: 4, name: 'Power_of_Attorney.pdf', status: 'approved', score: 88, date: 'Mar 22, 2026', type: 'Personal' },
-  { id: 5, name: 'Sale_Deed_Plot42.pdf', status: 'corrections', score: 72, date: 'Mar 20, 2026', type: 'Property' },
-  { id: 6, name: 'Employment_Contract.pdf', status: 'approved', score: 91, date: 'Mar 18, 2026', type: 'Business' },
-];
+const initialDocs: DocumentRecord[] = [];
 
-const initialActivity = [40, 65, 55, 80, 70, 90, 60, 85, 75, 95, 50, 78];
+const initialActivity: number[] = [];
 
 export const ResultsProvider = ({ children }: { children: ReactNode }) => {
-  const [documents, setDocuments] = useState<DocumentRecord[]>(() => {
-    try {
-      const raw = localStorage.getItem('results.documents');
-      if (raw) return JSON.parse(raw) as DocumentRecord[];
-    } catch (e) {
-      // ignore
-    }
-    return initialDocs;
-  });
+  const { user } = useAuth();
+  const [documents, setDocuments] = useState<DocumentRecord[]>(initialDocs);
+  const [activity, setActivity] = useState<number[]>(initialActivity);
 
-  const [activity, setActivity] = useState<number[]>(() => {
-    try {
-      const raw = localStorage.getItem('results.activity');
-      if (raw) return JSON.parse(raw) as number[];
-    } catch (e) {
-      // ignore
+  // Load the specific user's data when they log in
+  useEffect(() => {
+    if (user) {
+      try {
+        const rawDocs = localStorage.getItem(`results.documents.${user._id}`);
+        setDocuments(rawDocs ? JSON.parse(rawDocs) : initialDocs);
+
+        const rawAct = localStorage.getItem(`results.activity.${user._id}`);
+        setActivity(rawAct ? JSON.parse(rawAct) : initialActivity);
+      } catch (e) {
+        setDocuments(initialDocs);
+        setActivity(initialActivity);
+      }
+    } else {
+      // Clear the dashboard when the user logs out
+      setDocuments([]);
+      setActivity([]);
     }
-    return initialActivity;
-  });
+  }, [user]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('results.documents', JSON.stringify(documents));
-      localStorage.setItem('results.activity', JSON.stringify(activity));
-    } catch (e) {
-      // ignore
+    if (user) {
+      try {
+        localStorage.setItem(`results.documents.${user._id}`, JSON.stringify(documents));
+        localStorage.setItem(`results.activity.${user._id}`, JSON.stringify(activity));
+      } catch (e) {
+        // ignore
+      }
     }
-  }, [documents, activity]);
+  }, [documents, activity, user]);
 
-  const addDocument = (d: DocumentRecord) => {
+  const addDocument = useCallback((d: DocumentRecord) => {
     setDocuments((prev) => [d, ...prev]);
-    // update activity: shift and add based on score (or 50 if null)
+    // update activity: append to the end for left-to-right chronological display
     const value = d.score !== null && d.score !== undefined ? Math.max(0, Math.min(100, d.score)) : 50;
     setActivity((prev) => {
-      const next = [value, ...prev].slice(0, 12);
+      const next = [...prev, value].slice(-12);
       return next;
     });
-  };
+  }, []);
 
-  const clearDocuments = () => {
+  const clearDocuments = useCallback(() => {
     setDocuments([]);
     setActivity([]);
-  };
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({ documents, activity, addDocument, clearDocuments }),
+    [documents, activity, addDocument, clearDocuments]
+  );
 
   return (
-    <ResultsContext.Provider value={{ documents, activity, addDocument, clearDocuments }}>
+    <ResultsContext.Provider value={contextValue}>
       {children}
     </ResultsContext.Provider>
   );

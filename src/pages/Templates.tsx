@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FileText, Search, Download, Eye, Filter } from "lucide-react";
+import { FileText, Search, Download, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,8 @@ const Templates = () => {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filtered = templates.filter((t) => {
-    const matchesSearch = t.title.toLowerCase().includes(search.toLowerCase());
+    const searchLower = search.toLowerCase();
+    const matchesSearch = t.title.toLowerCase().includes(searchLower) || t.desc.toLowerCase().includes(searchLower);
     const matchesCategory = activeCategory === "All" || t.category === activeCategory;
     return matchesSearch && matchesCategory;
   });

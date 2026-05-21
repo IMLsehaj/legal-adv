@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useMemo } from "react";
 
 export type ThemeName = "navy" | "emerald" | "rose" | "sunset" | "midnight" | "ocean";
 
@@ -25,17 +25,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeName>(() => (localStorage.getItem("legaledge-theme") as ThemeName) || "navy");
   const [isDark, setIsDark] = useState(() => localStorage.getItem("legaledge-dark") === "true");
 
-  const setTheme = (t: ThemeName) => {
+  const setTheme = useCallback((t: ThemeName) => {
     setThemeState(t);
     localStorage.setItem("legaledge-theme", t);
-  };
+  }, []);
 
-  const toggleDark = () => {
+  const toggleDark = useCallback(() => {
     setIsDark((p) => {
       localStorage.setItem("legaledge-dark", String(!p));
       return !p;
     });
-  };
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -43,7 +43,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.classList.toggle("dark", isDark);
   }, [theme, isDark]);
 
-  return <ThemeContext.Provider value={{ theme, setTheme, isDark, toggleDark }}>{children}</ThemeContext.Provider>;
+  const contextValue = useMemo(
+    () => ({ theme, setTheme, isDark, toggleDark }),
+    [theme, setTheme, isDark, toggleDark]
+  );
+
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

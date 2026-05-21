@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const postRoutes = require('./routes/postRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/messages', messageRoutes);
 
 app.get('/', (req, res) => res.send('LegalAdvisor API'));
 

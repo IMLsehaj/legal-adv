@@ -14,7 +14,7 @@ const register = asyncHandler(async (req, res) => {
   }
 
   let role = 'client';
-  if (roleKey === 'admin007') {
+  if (roleKey && roleKey === process.env.ADMIN_SECRET_KEY) {
     role = 'admin';
   }
 

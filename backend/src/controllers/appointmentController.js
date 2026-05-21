@@ -46,7 +46,7 @@ const getAppointments = asyncHandler(async (req, res) => {
 
 // @desc    Update appointment status
 // @route   PUT /api/appointments/:id/status
-// @access  Private (Lawyer or Admin)
+// @access  Private (Client, Lawyer or Admin)
 const updateAppointmentStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const appointment = await Appointment.findById(req.params.id);
@@ -62,7 +62,23 @@ const updateAppointmentStatus = asyncHandler(async (req, res) => {
     throw new Error('Not authorized to update this appointment');
   }
 
+  // Ensure clients can only cancel their own appointments
+  if (req.user.role === 'client') {
+    if (appointment.client.toString() !== req.user.id) {
+      res.status(403);
+      throw new Error('Not authorized to update this appointment');
+    }
+    if (status !== 'cancelled') {
+      res.status(403);
+      throw new Error('Clients can only cancel appointments');
+    }
+  }
+
   appointment.status = status || appointment.status;
+  if (req.body.date) {
+    appointment.date = req.body.date;
+  }
+  
   const updatedAppointment = await appointment.save();
 
   res.json(updatedAppointment);

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ReactNode } from "react";
 
 interface Props {
@@ -17,9 +17,11 @@ const directionMap = {
 
 const AnimatedSection = ({ children, className = "", delay = 0, direction = "up" }: Props) => {
   const d = directionMap[direction];
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, x: d.x, y: d.y }}
+      initial={{ opacity: 0, ...(shouldReduceMotion ? {} : { x: d.x, y: d.y }) }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}

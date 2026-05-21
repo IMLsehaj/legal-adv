@@ -107,9 +107,7 @@ const Index = () => (
             <Button size="lg" asChild className="group">
               <Link to="/checker">
                 Check a Document
-                <motion.span className="ml-2 inline-block" whileHover={{ x: 4 }}>
-                  <ArrowRight className="w-4 h-4" />
-                </motion.span>
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
@@ -278,8 +276,8 @@ const Index = () => (
             <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-4 relative z-10">Ready to Perfect Your Documents?</h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto relative z-10">Join thousands of users who trust LegalEdge for accurate, compliant legal documents.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative z-10">
-              <Button size="lg" asChild>
-                <Link to="/checker">Start Free Analysis <ArrowRight className="w-4 h-4 ml-2" /></Link>
+              <Button size="lg" asChild className="group">
+                <Link to="/checker">Start Free Analysis <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" /></Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/pricing">View Pricing</Link>

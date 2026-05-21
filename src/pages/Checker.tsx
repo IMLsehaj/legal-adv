@@ -16,25 +16,6 @@ type AnalysisResult = {
   suggestions: string[];
 };
 
-const mockResult: AnalysisResult = {
-  score: 78,
-  issues: [
-    { type: "error", message: "Missing notarization section", section: "Signatures" },
-    { type: "error", message: "Date format is inconsistent (use DD/MM/YYYY)", section: "Header" },
-    { type: "warning", message: "Witness details are incomplete", section: "Witness" },
-    { type: "warning", message: "Jurisdiction clause could be more specific", section: "Terms" },
-    { type: "success", message: "All parties properly identified", section: "Parties" },
-    { type: "success", message: "Consideration clause is well-defined", section: "Terms" },
-    { type: "success", message: "Proper legal terminology used throughout", section: "Language" },
-  ],
-  suggestions: [
-    "Add a notarization clause at the end of the document with space for notary seal.",
-    "Standardize all dates to DD/MM/YYYY format for consistency.",
-    "Include full name, address, and identification number for each witness.",
-    "Specify the exact court jurisdiction (e.g., 'District Court of Mumbai').",
-  ],
-};
-
 const Checker = () => {
   const [file, setFile] = useState<File | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -84,15 +65,18 @@ const Checker = () => {
       if (!response.ok) {
         throw new Error(data.message || "AI analysis failed.");
       }
+      
+      const finalScore = data.score || 85; // Fallback or extracted score
+      const finalStatus = finalScore >= 80 ? "approved" : finalScore >= 60 ? "corrections" : "pending";
 
       setResult({
-        score: 85, // Fallback score 
+        score: finalScore,
         analysisText: data.analysis,
-        issues: mockResult.issues, // Keeping your mock layout elements visible
-        suggestions: mockResult.suggestions,
+        issues: data.issues || [], 
+        suggestions: data.suggestions || [],
       });
 
-      addDocument({ id: Date.now(), name: file.name, status: "pending", score: 85, date: new Date().toLocaleDateString(), type: "Document" });
+      addDocument({ id: Date.now(), name: file.name, status: finalStatus, score: finalScore, date: new Date().toLocaleDateString(), type: "Document" });
 
       toast({ title: "Analysis Complete", description: "Your document was successfully analyzed by AI." });
     } catch (error) {

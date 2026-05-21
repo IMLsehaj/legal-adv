@@ -62,7 +62,7 @@ const deletePost = asyncHandler(async (req, res) => {
     res.status(403);
     throw new Error('Not authorized');
   }
-  await post.remove();
+  await post.deleteOne();
   res.json({ message: 'Post removed' });
 });
 

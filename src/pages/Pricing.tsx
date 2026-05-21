@@ -35,9 +35,9 @@ const plans = [
 ];
 
 const Pricing = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen bg-background flex flex-col">
     <Navbar />
-    <div className="pt-24 pb-16">
+    <div className="flex-1 pt-24 pb-16">
       <div className="container">
         <div className="text-center mb-14">
           <h1 className="font-serif text-3xl md:text-5xl text-foreground mb-4">Simple, Transparent Pricing</h1>
@@ -76,8 +76,10 @@ const Pricing = () => (
                   </li>
                 ))}
               </ul>
-              <Button size="lg" variant={plan.popular ? "default" : "outline"} className="w-full">
-                {plan.cta} {plan.popular && <ArrowRight className="w-4 h-4 ml-2" />}
+          <Button size="lg" variant={plan.popular ? "default" : "outline"} className="w-full" asChild>
+            <Link to="/register">
+              {plan.cta} {plan.popular && <ArrowRight className="w-4 h-4 ml-2" />}
+            </Link>
               </Button>
             </div>
           ))}

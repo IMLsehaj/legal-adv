@@ -25,9 +25,9 @@ const Footer = () => (
           <ul className="space-y-2">
             {col.links.map((link) => (
               <li key={link}>
-                <span className="text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
+                <Link to="#" className="text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
                   {link}
-                </span>
+                </Link>
               </li>
             ))}
           </ul>
@@ -36,7 +36,7 @@ const Footer = () => (
     </div>
     <div className="border-t">
       <div className="container py-6 text-center text-xs text-muted-foreground">
-        © 2026 LegalEdge. All rights reserved.
+        © {new Date().getFullYear()} LegalEdge. All rights reserved.
       </div>
     </div>
   </footer>
