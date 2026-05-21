@@ -26,6 +26,8 @@ type LawyerFromAPI = {
 
 type ChatMessage = { _id: string; sender: string; receiver: string; content: string; createdAt: string };
 
+const API_URL = import.meta.env.PROD ? "" : "http://localhost:5000";
+
 const ExpertConnect = () => {
   const [search, setSearch] = useState("");
   const [activeSpec, setActiveSpec] = useState("All");
@@ -43,7 +45,7 @@ const ExpertConnect = () => {
   useEffect(() => {
     const fetchLawyers = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/users/lawyers");
+        const res = await fetch(`${API_URL}/api/users/lawyers`);
         if (!res.ok) throw new Error("Failed to fetch lawyers");
 
         const data = await res.json();
@@ -83,7 +85,7 @@ const ExpertConnect = () => {
     }
     
     try {
-      const response = await fetch("http://localhost:5000/api/appointments", {
+      const response = await fetch(`${API_URL}/api/appointments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +114,7 @@ const ExpertConnect = () => {
     }
     setChatLawyer(lawyer);
     try {
-      const res = await fetch(`http://localhost:5000/api/messages/${lawyer.id}`, {
+      const res = await fetch(`${API_URL}/api/messages/${lawyer.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -129,7 +131,7 @@ const ExpertConnect = () => {
     if (!newMessage.trim() || !chatLawyer || !token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/messages", {
+      const res = await fetch(`${API_URL}/api/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ receiverId: chatLawyer.id, content: newMessage }),

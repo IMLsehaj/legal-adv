@@ -10,6 +10,8 @@ import Footer from "@/components/Footer";
 import { useResults } from "@/contexts/ResultsContext";
 import { useAuth } from "@/contexts/AuthContext";
 
+const API_URL = import.meta.env.PROD ? "" : "http://localhost:5000";
+
 const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive"; icon: React.ElementType }> = {
   approved: { label: "Approved", variant: "default", icon: CheckCircle2 },
   corrections: { label: "Needs Corrections", variant: "destructive", icon: AlertTriangle },
@@ -45,7 +47,7 @@ const Dashboard = () => {
       const fetchAppts = async () => {
         setLoadingAppts(true);
         try {
-          const res = await fetch("http://localhost:5000/api/appointments", {
+          const res = await fetch(`${API_URL}/api/appointments`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           if (res.ok) {
@@ -74,7 +76,7 @@ const Dashboard = () => {
       const bodyData: { status: string; date?: string } = { status: newStatus };
       if (newDate) bodyData.date = newDate;
 
-      const res = await fetch(`http://localhost:5000/api/appointments/${id}/status`, {
+      const res = await fetch(`${API_URL}/api/appointments/${id}/status`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
@@ -93,7 +95,7 @@ const Dashboard = () => {
   const openChat = async (userId: string, userName: string) => {
     setChatUser({ id: userId, name: userName });
     try {
-      const res = await fetch(`http://localhost:5000/api/messages/${userId}`, {
+      const res = await fetch(`${API_URL}/api/messages/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -110,7 +112,7 @@ const Dashboard = () => {
     if (!newChatMessage.trim() || !chatUser || !token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/messages", {
+      const res = await fetch(`${API_URL}/api/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ receiverId: chatUser.id, content: newChatMessage }),
