@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -23,7 +24,13 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/messages', messageRoutes);
 
-app.get('/', (req, res) => res.send('LegalAdvisor API'));
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../../dist')));
+
+  app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../../dist/index.html')));
+} else {
+  app.get('/', (req, res) => res.send('LegalAdvisor API (Development)'));
+}
 
 app.use(errorHandler);
 
