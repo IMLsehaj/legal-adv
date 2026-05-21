@@ -15,15 +15,17 @@ const ThemeSwitcher = () => {
           className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           aria-label="Toggle dark mode"
         >
-          <motion.div
-            key={isDark ? "moon" : "sun"}
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: 90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {isDark ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-          </motion.div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={isDark ? "moon" : "sun"}
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {isDark ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </motion.div>
+          </AnimatePresence>
         </button>
         <button
           onClick={() => setOpen(!open)}

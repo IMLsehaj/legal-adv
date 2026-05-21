@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const lawyerDetailsSchema = new mongoose.Schema({
+  specialization: { type: String, default: '' },
+  experience: { type: Number, default: 0 },
+  hourlyRate: { type: Number, default: 0 },
+  bio: { type: String, default: '' },
+  location: { type: String, default: '' },
+}, { _id: false });
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -11,6 +19,7 @@ const userSchema = new mongoose.Schema(
       enum: ['client', 'lawyer', 'admin'],
       default: 'client',
     },
+    lawyerDetails: lawyerDetailsSchema,
   },
   { timestamps: true }
 );

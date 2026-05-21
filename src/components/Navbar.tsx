@@ -11,11 +11,14 @@ const getNavLinks = (role?: string) => {
     { to: "/templates", label: "Templates" },
     { to: "/checker", label: "Document Checker" },
     { to: "/experts", label: "Experts" },
-    { to: "/dashboard", label: "Dashboard" },
-    { to: "/pricing", label: "Pricing" },
+    { to: "/dashboard", label: "Dashboard" }
+    // { to: "/pricing", label: "Pricing" },
   ];
   if (role === "admin") {
     links.splice(4, 0, { to: "/admin/dashboard", label: "Add New Lawyer" });
+  }
+  if (role === "lawyer") {
+    links.splice(4, 0, { to: "/lawyer/profile", label: "Edit Profile" });
   }
   return links;
 };
@@ -37,19 +40,22 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-1">
-          {currentNavLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                location.pathname === link.to
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {currentNavLinks.map((link) => {
+            const isActive = location.pathname === link.to || (link.to !== "/" && location.pathname.startsWith(link.to));
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
         <div className="hidden md:flex items-center gap-3">
@@ -77,27 +83,30 @@ const Navbar = () => {
 
       {mobileOpen && (
         <div className="md:hidden border-t bg-card p-4 space-y-2">
-          {currentNavLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              onClick={() => setMobileOpen(false)}
-              className={`block px-4 py-2.5 rounded-md text-sm font-medium ${
-                location.pathname === link.to
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {currentNavLinks.map((link) => {
+            const isActive = location.pathname === link.to || (link.to !== "/" && location.pathname.startsWith(link.to));
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileOpen(false)}
+                className={`block px-4 py-2.5 rounded-md text-sm font-medium ${
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           <div className="pt-2 flex gap-2">
             {user ? (
-              <Button variant="outline" size="sm" className="w-full" onClick={logout}>Log out</Button>
+              <Button variant="outline" size="sm" className="w-full" onClick={() => { logout(); setMobileOpen(false); }}>Log out</Button>
             ) : (
               <div className="flex gap-2 w-full">
-                <Button variant="ghost" size="sm" className="flex-1" asChild><Link to="/login">Sign In</Link></Button>
-                <Button size="sm" className="flex-1" asChild><Link to="/register">Get Started</Link></Button>
+                <Button variant="ghost" size="sm" className="flex-1" asChild><Link to="/login" onClick={() => setMobileOpen(false)}>Sign In</Link></Button>
+                <Button size="sm" className="flex-1" asChild><Link to="/register" onClick={() => setMobileOpen(false)}>Get Started</Link></Button>
               </div>
             )}
           </div>
