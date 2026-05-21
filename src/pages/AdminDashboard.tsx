@@ -8,6 +8,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
+const API_URL = import.meta.env.PROD ? "" : "http://localhost:5000";
+
 const AdminDashboard = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,7 +35,7 @@ const AdminDashboard = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/users/lawyer", {
+      const res = await fetch(`${API_URL}/api/users/lawyer`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
